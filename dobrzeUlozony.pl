@@ -6,18 +6,21 @@ findEnds([], Ends, Ends).
 findEnds([node(V, [], _ ) | L], Ends, Results) :-
     findEnds(L, [V|Ends], Results).
 
-findStart(Graph, Start) :- findStarts(Graph, [], [], [], [Start]).
+findStart(Graph, Start) :- 
+    findStart(Graph, [], [], [], Start),
+    \+ is_list(Start),
+    write(Start).
 
-findStarts([], [], _, Starts, Starts).
+findStart([], [], _, [Start], [Start]).
 
-findStarts([], [V|L], InEdges, Starts, Results) :-
+findStart([], [V|L], InEdges, Starts, Results) :-
     \+ member(V, InEdges),
-    findStarts([], L, InEdges, [V|Starts], Results).
+    findStart([], L, InEdges, [V|Starts], Results).
 
-findStarts([], [V|L], InEdges, Starts, Results) :-
+findStart([], [V|L], InEdges, Starts, Results) :-
     \+ member(V, InEdges),
-    findStarts([], L, InEdges, [Starts], Results).
+    findStart([], L, InEdges, [Starts], Results).
 
-% findStarts(Graph, Vertices, InEdges, Results).
-findStarts([node(V, E, _) | L], Vertices, InEdges, Starts, Results) :-
-    findStarts(L, [V | Vertices], [E | InEdges], Starts, Results).
+% findStart(Graph, Vertices, InEdges, Results).
+findStart([node(V, E, _) | L], Vertices, InEdges, Starts, Results) :-
+    findStart(L, [V | Vertices], [E | InEdges], Starts, Results).
