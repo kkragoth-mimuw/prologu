@@ -1,13 +1,13 @@
 
 jestEFGrafem(Graph) :-
-    isEFGGraph(Graph, Graph, []).
+    isEFGGraphCheckDuplicates(Graph, Graph, []).
 
 % First pass - check for duplicates in vertices declarations
 % isEFGGraphCheckDuplicates(OriginalGraph, CopyOfModifiedGraph, GraphVertices)
-isEFGGraphCheckDuplicates(Graph, [], Vertices) :- isEFGGraphCheckUndeclared(Graph, Vertices).
+isEFGGraphCheckDuplicates(Graph, [], Vertices) :- isEFGGraphCheckUndeclared(Graph, Graph, Vertices).
 isEFGGraphCheckDuplicates(Graph, [ node(V,_,_) | L], Vertices) :- 
     \+ member(V, Vertices),
-    isEFGGraphCheckDuplicates(Graph, Graph, L, [V|Vertices]).
+    isEFGGraphCheckDuplicates(Graph, L, [V|Vertices]).
 
 % Second pass - check if edges use undeclared vertices
 % isEFGGraphCheckUndeclared(Graph, Vertices)
@@ -29,11 +29,12 @@ isEFGGraphCheckSymmetric(Graph, [node(V, E, F) | L]) :-
     checkIfFedgesAreSymmetric(Graph, F, V),
     isEFGGraphCheckSymmetric(Graph, L).
 
+checkIfFedgesAreSymmetric(_, [], V) :- !.
 checkIfFedgesAreSymmetric(Graph, [E|F], V) :-
     checkIfVisInE(Graph, E, V),
     checkIfFedgesAreSymmetric(Graph, F, V).
 
-checkIfVisInE([node(V, _, F) | L], V, Vstart) :-
+checkIfVisInE([node(V, A, F) | L], V, Vstart) :-
     member(Vstart, F).
 
 checkIfVisInE([_|L], V, Vstart) :-
