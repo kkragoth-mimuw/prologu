@@ -1,7 +1,7 @@
 jestEFGrafem(Graph) :-
     checkDuplicates(Graph, [], Vertices),
     checkUndeclared(Graph, Vertices).
-    checkIfFareSymmetric(Graph, Graph).
+    checkGraphSymmetric(Graph, Graph).
 
 checkDuplicates([], Vertices, Vertices).
 checkDuplicates([node(V, _, _ ) | L , Vertices, Result) :-
@@ -14,7 +14,25 @@ checkUndeclared([node(_, E, F)|L], Vertices) :-
     listContainedInList(F, Vertices)
     checkUndeclared(L, Vertices).
 
+checkGraphSymmetric(_, []).
+checkGraphSymmetric(Graph, [node(V, E, F)|L] :-
+    checkIfFedgesAreSymmetric(Graph, F, V),
+    checkGraphSymmetric(Graph, L).
+
+checkIfFedgesAreSymmetric(_, [], _) :- !.
+checkIfFedgesAreSymmetric(Graph, [E|F], V) :-
+    checkIfVisInE(Graph, E, V),
+    checkIfFedgesAreSymmetric(Graph, F, V).
+
+checkIfVisInE([node(V, A, F) | L], V, Vstart) :-
+    member(Vstart, F).
+
+checkIfVisInE([_|L], V, Vstart) :-cesList([E|L], Vertices)
+    checkIfVisInE(L, V, Vstart).
+
+
 listContainedInList([], _).
 listContainedInList([E|L], Vertices) :-
     member(E, Vertices),
     listContainedInList(L, Vertices).
+

@@ -37,5 +37,5 @@ checkIfFedgesAreSymmetric(Graph, [E|F], V) :-
 checkIfVisInE([node(V, A, F) | L], V, Vstart) :-
     member(Vstart, F).
 
-checkIfVisInE([_|L], V, Vstart) :-
+checkIfVisInE([_|L], V, Vstart) :-cesList([E|L], Vertices)
     checkIfVisInE(L, V, Vstart).
