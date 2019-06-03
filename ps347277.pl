@@ -23,5 +23,18 @@ containedIn([E|L], Vertices) :-
     containedIn(L, Vertices).
 
 
-% 
 % isEFGGraphCheckSymmetric(Graph, Graph)
+isEFGGraphCheckSymmetric(_, []).
+isEFGGraphCheckSymmetric(Graph, [node(V, E, F) | L]) :-
+    checkIfFedgesAreSymmetric(Graph, F, V),
+    isEFGGraphCheckSymmetric(Graph, L).
+
+checkIfFedgesAreSymmetric(Graph, [E|F], V) :-
+    checkIfVisInE(Graph, E, V),
+    checkIfFedgesAreSymmetric(Graph, F, V).
+
+checkIfVisInE([node(V, _, F) | L], V, Vstart) :-
+    member(Vstart, F).
+
+checkIfVisInE([_|L], V, Vstart) :-
+    checkIfVisInE(L, V, Vstart).
