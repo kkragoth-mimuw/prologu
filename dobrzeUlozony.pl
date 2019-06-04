@@ -1,4 +1,4 @@
-%findEnds(Graph, Ends)
+% findEnds(Graph, Ends)
 
 findEnd(Graph, End) :- findEnds(Graph, [], [End]).
 

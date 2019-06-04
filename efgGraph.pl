@@ -1,12 +1,13 @@
 jestEFGrafem(Graph) :-
-    checkDuplicates(Graph, [], Vertices),
+    getGraphVertices(Graph, Vertices),
+    checkDuplicates(Graph, []),
     checkUndeclared(Graph, Vertices),
-    checkGraphSymmetric(Graph, Graph).
+    checkGraphSymmetric(Graph).
 
-checkDuplicates([], Vertices, Vertices).
-checkDuplicates([node(V, _, _ ) | L], Vertices, Result) :-
+checkDuplicates([], _Vertices).
+checkDuplicates([node(V, _, _ ) | L], Vertices) :-
     \+ member(V, Vertices),
-    checkDuplicates(L, [V | Vertices], Result).
+    checkDuplicates(L, [V | Vertices]).
 
 checkUndeclared([], _).
 checkUndeclared([node(_, E, F)|L], Vertices) :-
@@ -14,6 +15,7 @@ checkUndeclared([node(_, E, F)|L], Vertices) :-
     listContainedInList(F, Vertices),
     checkUndeclared(L, Vertices).
 
+checkGraphSymmetric(Graph) :- checkGraphSymmetric(Graph, Graph).
 checkGraphSymmetric(_, []).
 checkGraphSymmetric(Graph, [node(V, _E, F)|L]) :-
     checkIfFedgesAreSymmetric(Graph, F, V),
@@ -30,8 +32,12 @@ checkIfVisInE([node(V, _A, F) | _L], V, Vstart) :-
 checkIfVisInE([_|L], V, Vstart) :-
     checkIfVisInE(L, V, Vstart).
 
+getGraphVertices(Graph, Vertices) :- computeGraphVertices(Graph, [], Vertices).
+computeGraphVertices([], Vertices, Vertices).
+computeGraphVertices([node(V, _, _) | L], Vertices, Result) :-
+    computeGraphVertices(L, [V|Vertices], Result).
+
 listContainedInList([], _).
 listContainedInList([E|L], Vertices) :-
     member(E, Vertices),
     listContainedInList(L, Vertices).
-
