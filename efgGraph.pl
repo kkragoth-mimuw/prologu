@@ -1,19 +1,19 @@
 jestEFGrafem(Graph) :-
     getGraphVertices(Graph, Vertices),
-    checkDuplicates(Graph, []),
-    checkUndeclared(Graph, Vertices),
+    checkNoDuplicates(Graph, []),
+    checkNoUndeclared(Graph, Vertices),
     checkGraphSymmetric(Graph).
 
-checkDuplicates([], _Vertices).
-checkDuplicates([node(V, _, _ ) | L], Vertices) :-
+checkNoDuplicates([], _Vertices).
+checkNoDuplicates([node(V, _, _ ) | L], Vertices) :-
     \+ member(V, Vertices),
-    checkDuplicates(L, [V | Vertices]).
+    checkNoDuplicates(L, [V | Vertices]).
 
-checkUndeclared([], _).
-checkUndeclared([node(_, E, F)|L], Vertices) :-
+checkNoUndeclared([], _).
+checkNoUndeclared([node(_, E, F)|L], Vertices) :-
     listContainedInList(E, Vertices),
     listContainedInList(F, Vertices),
-    checkUndeclared(L, Vertices).
+    checkNoUndeclared(L, Vertices).
 
 checkGraphSymmetric(Graph) :- checkGraphSymmetric(Graph, Graph).
 checkGraphSymmetric(_, []).
@@ -73,7 +73,18 @@ findStart([node(V, E, _) | L], Vertices, InEdges, Starts, Results) :-
 
 %% UTILS
 getVertexFromGraph(Graph, node(V, E, F)) :- computeGetVertexFromGraph(Graph, V, E, F).
-computeGetVertexFromGraph([], _, _, _) :- !.
 computeGetVertexFromGraph([node(V, E, F) | _], V, E, F).
 computeGetVertexFromGraph([_|L], V, E, F) :-
     computeGetVertexFromGraph(L, V, E, F).
+
+
+maxEDegreeOfGraph(Graph, D) :- computeMaxEDegreeOfGraph(Graph, 0, D).
+computeMaxEDegreeOfGraph([], D, D).
+computeMaxEDegreeOfGraph([node(_, E, _) | L], D, Result) :- 
+    length(E, Len),
+    Len > D,
+    computeMaxEDegreeOfGraph(L, Len, Result).
+computeMaxEDegreeOfGraph([node(_, E, _) | L], D, Result) :- 
+    length(E, Len),
+    Len =< D,
+    computeMaxEDegreeOfGraph(L, D, Result). 
