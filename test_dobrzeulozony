@@ -1,0 +1,1 @@
+[node(v0, [v1], [v2]), node(v1, [v2], [v3]), node(v2, [v3], [v0]), node(v3, [], [v1])]

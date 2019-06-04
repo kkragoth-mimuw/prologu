@@ -5,6 +5,8 @@ findEnd(Graph, End) :- findEnds(Graph, [], [End]).
 findEnds([], Ends, Ends).
 findEnds([node(V, [], _ ) | L], Ends, Results) :-
     findEnds(L, [V|Ends], Results).
+findEnds([node(_, [_], _) | L], Ends, Results) :-
+    findEnds(L, Ends, Results).
 
 findStart(Graph, Start) :- 
     findStart(Graph, [], [], [], Start),
