@@ -66,22 +66,27 @@ findEnds([node(_, [_], _) | L], Ends, Results) :-
     findEnds(L, Ends, Results).
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+findStart(Graph, Start) :- findStarts(Graph, [Start]).
 
-findStart(Graph, Start) :- 
-    findStart(Graph, [], [], [], Start).
+inputEEdges([], InputEdges, InputEdges).
+inputEEdges([node(_, E, _) | L], InputEdges, Result) :-
+    append(E, InputEdges, NewInputEdges),
+    inputEEdges(L, NewInputEdges, Result).
 
-findStart([], [], _, [Start], [Start]).
+findStarts(Graph, Starts) :-
+    inputEEdges(Graph, [], InputEdges),
+    getGraphVertices(Graph, Vertices),
+    difference(Vertices, InputEdges, [], Starts).
 
-findStart([], [V|L], InEdges, Starts, Results) :-
-    \+ member(V, InEdges),
-    findStart([], L, InEdges, [V|Starts], Results).
+difference([], _, List, List).
+difference([E|L], L2, Ends, Result) :-
+    \+ member(E, L2),
+    difference(L, L2, [E|Ends], Result).
 
-findStart([], [V|L], InEdges, Starts, Results) :-
-    \+ member(V, InEdges),
-    findStart([], L, InEdges, [Starts], Results).
+difference([E|L], L2, Ends, Result) :-
+    member(E, L2),
+    difference(L, L2, Ends, Result).
 
-findStart([node(V, E, _) | L], Vertices, InEdges, Starts, Results) :-
-    findStart(L, [V | Vertices], [E | InEdges], Starts, Results).
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
