@@ -53,7 +53,7 @@ jestDobrzeUlozony(EFgraf) :-
 
     MaxSteps is NumberOfGraphVertices * MaxEDegreeOfGraph,
 
-    dfs(EFgraf, Start, Destination, 1, MaxSteps, [Start]).
+    dfsE(EFgraf, Start, Destination, 1, MaxSteps, [Start]).
 
 
 findEnd(Graph, End) :- findEnds(Graph, [], [End]).
@@ -92,39 +92,30 @@ difference([E|L], L2, Ends, Result) :-
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %DFS
 
-dfs(Graph, Destination, Destination, CurrentStep, MaximumSteps, VisitedVerticesSet) :-
+dfsE(Graph, Destination, Destination, CurrentStep, MaximumSteps, VisitedVerticesSet) :-
     CurrentStep =< MaximumSteps,
 
     addVertexToVisitedVerticesSet(Destination, VisitedVerticesSet, NewVisitedVerticesSet),
 
     length(Graph, NumberOfGraphVertices),
-    length(NewVisitedVerticesSet, NumberOfGraphVertices),
+    length(NewVisitedVerticesSet, NumberOfGraphVertices).
 
-    write(Destination),
-    write(' Destination reached'),
-    nl.
 
-dfs(Graph, V, Destination, CurrentStep, MaximumSteps, VisitedVerticesSet) :-
+dfsE(Graph, V, Destination, CurrentStep, MaximumSteps, VisitedVerticesSet) :-
     CurrentStep =< MaximumSteps,
+
     NewStep is CurrentStep + 1,
 
-    write(V),
-    nl,
-
     addVertexToVisitedVerticesSet(V, VisitedVerticesSet, NewVisitedVerticesSet),
-    getVertexFromGraph(Graph, node(V, F, _)),
-    forEachNeighbourLaunchDfs(Graph, F, Destination, NewStep, MaximumSteps, NewVisitedVerticesSet).
-
+    member(node(V, F, _), Graph),
+    member(Next, F),
+    dfsE(Graph, Next, Destination, NewStep, MaximumSteps, NewVisitedVerticesSet).
 
 addVertexToVisitedVerticesSet(V, VisitedVerticesSet, VisitedVerticesSet) :-
     member(V, VisitedVerticesSet).
 
 addVertexToVisitedVerticesSet(V, VisitedVerticesSet, [V|VisitedVerticesSet]) :-
     \+ member(V, VisitedVerticesSet).
-
-forEachNeighbourLaunchDfs(Graph, [V|L], Destination, NewStep, MaximumSteps, VisitedVerticesSet) :-
-    dfs(Graph, V, Destination, NewStep, MaximumSteps, VisitedVerticesSet),
-    forEachNeighbourLaunchDfs(Graph, L, Destination, NewStep, MaximumSteps, VisitedVerticesSet).
 
 
 
