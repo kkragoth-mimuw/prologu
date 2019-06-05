@@ -33,6 +33,7 @@ jestDobrzeUlozony(EFgraf) :-
 
     findStart(EFgraf, Start),
     findEnd(EFgraf, Destination),
+
     Start \= Destination,
     
     length(EFgraf, NumberOfGraphVertices),
@@ -51,7 +52,9 @@ findEnd(Graph, End) :- findEnds(Graph, [], [End]).
 findEnds([], Ends, Ends).
 findEnds([node(V, [], _ ) | L], Ends, Results) :-
     findEnds(L, [V|Ends], Results).
-findEnds([node(_, [_], _) | L], Ends, Results) :-
+findEnds([node(_, E, _) | L], Ends, Results) :-
+    length(E, Len),
+    Len > 0,
     findEnds(L, Ends, Results).
 
 findStart(Graph, Start) :- findStarts(Graph, [Start]).
