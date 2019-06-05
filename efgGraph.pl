@@ -45,8 +45,14 @@ listContainedInList([E|L], Vertices) :-
 
 % Check dobrzeUlozony
 jestDobrzeUlozony(EFgraf) :-
+    jestEFGrafem(EFgraf),
+
+    \+ fDegreeOverLimit(EFgraf),
+
     findStart(EFgraf, Start),
     findEnd(EFgraf, Destination),
+
+    Start \= Destination,
     
     length(EFgraf, NumberOfGraphVertices),
     maxEDegreeOfGraph(EFgraf, MaxEDegreeOfGraph),
@@ -56,9 +62,13 @@ jestDobrzeUlozony(EFgraf) :-
     dfsE(EFgraf, Start, Destination, 1, MaxSteps, [Start]).
 
 
+fDegreeOverLimit(Graph) :-
+    member(node(_, _, F), Graph),
+    length(F, FDegree),
+    FDegree > 3.
+
 findEnd(Graph, End) :- findEnds(Graph, [], [End]).
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 findEnds([], Ends, Ends).
 findEnds([node(V, [], _ ) | L], Ends, Results) :-
     findEnds(L, [V|Ends], Results).
@@ -107,7 +117,9 @@ dfsE(Graph, V, Destination, CurrentStep, MaximumSteps, VisitedVerticesSet) :-
     NewStep is CurrentStep + 1,
 
     addVertexToVisitedVerticesSet(V, VisitedVerticesSet, NewVisitedVerticesSet),
+
     member(node(V, F, _), Graph),
+
     member(Next, F),
     dfsE(Graph, Next, Destination, NewStep, MaximumSteps, NewVisitedVerticesSet).
 
