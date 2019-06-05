@@ -1,3 +1,4 @@
+%%% jestEFGrafem
 jestEFGrafem(Graph) :-
     getGraphVertices(Graph, Vertices),
     checkNoDuplicates(Graph, []),
@@ -42,6 +43,19 @@ listContainedInList([E|L], Vertices) :-
     member(E, Vertices),
     listContainedInList(L, Vertices).
 
+% Check dobrzeUlozony
+jestDobrzeUlozony(EFgraf) :-
+    findStart(EFgraf, Start),
+    findEnd(EFgraf, Destination),
+    
+    length(EFgraf, NumberOfGraphVertices),
+    maxEDegreeOfGraph(EFgraf, MaxEDegreeOfGraph),
+
+    MaxSteps is NumberOfGraphVertices * MaxEDegreeOfGraph,
+
+    dfs(EFgraf, Start, Destination, 1, MaxSteps, [Start]).
+
+
 findEnd(Graph, End) :- findEnds(Graph, [], [End]).
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -80,7 +94,7 @@ dfs(Graph, Destination, Destination, CurrentStep, MaximumSteps, VisitedVerticesS
 
     length(Graph, NumberOfGraphVertices),
     length(NewVisitedVerticesSet, NumberOfGraphVertices),
-    
+
     write(Destination),
     write(' Destination reached'),
     nl.
