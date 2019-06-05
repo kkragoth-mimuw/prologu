@@ -75,8 +75,12 @@ findStart([node(V, E, _) | L], Vertices, InEdges, Starts, Results) :-
 
 dfs(Graph, Destination, Destination, CurrentStep, MaximumSteps, VisitedVerticesSet) :-
     CurrentStep =< MaximumSteps,
+
+    addVertexToVisitedVerticesSet(Destination, VisitedVerticesSet, NewVisitedVerticesSet),
+
     length(Graph, NumberOfGraphVertices),
-    length(VisitedVerticesSet, NumberOfGraphVertices),
+    length(NewVisitedVerticesSet, NumberOfGraphVertices),
+    
     write(Destination),
     write(' Destination reached'),
     nl.
