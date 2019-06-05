@@ -33,12 +33,10 @@ jestDobrzeUlozony(EFgraf) :-
 
     findStart(EFgraf, Start),
     findEnd(EFgraf, Destination),
-
     Start \= Destination,
     
     length(EFgraf, NumberOfGraphVertices),
     maxEDegreeOfGraph(EFgraf, MaxEDegreeOfGraph),
-
     MaxSteps is NumberOfGraphVertices * MaxEDegreeOfGraph,
 
     dfsE(EFgraf, Start, Destination, 1, MaxSteps, [Start]).
