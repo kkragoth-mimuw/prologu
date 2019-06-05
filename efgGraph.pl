@@ -1,24 +1,24 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%% Part first - jestEFGrafem
 jestEFGrafem(Graph) :-
-    checkNoDuplicates(Graph),
-    \+ undeclaredExists(Graph),
-    \+ asymmetricExists(Graph).
+    checkNoVertexIsDuplicated(Graph),
+    \+ undeclaredVertexExists(Graph),
+    \+ asymmetricVertexExists(Graph).
 
-checkNoDuplicates(Graph) :- checkNoDuplicates(Graph, []).
-checkNoDuplicates([], _).
-checkNoDuplicates([node(V, _, _ ) | L], Vertices) :-
+checkNoVertexIsDuplicated(Graph) :- checkNoVertexIsDuplicated(Graph, []).
+checkNoVertexIsDuplicated([], _).
+checkNoVertexIsDuplicated([node(V, _, _ ) | L], Vertices) :-
     \+ member(V, Vertices),
-    checkNoDuplicates(L, [V | Vertices]).
+    checkNoVertexIsDuplicated(L, [V | Vertices]).
 
-undeclaredExists(Graph) :-
+undeclaredVertexExists(Graph) :-
     getGraphVertices(Graph, Vertices),
     member(node(_, E, F), Graph),
     append(E, F, Neighbours),
     member(V, Neighbours),
     \+ member(V, Vertices).
 
-asymmetricExists(Graph) :- 
+asymmetricVertexExists(Graph) :- 
     member(node(V, _, F), Graph),
     member(VSymmetric, F),
     member(node(VSymmetric, _, FSymmetric), Graph),
