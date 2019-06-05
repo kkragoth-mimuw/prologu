@@ -1,37 +1,27 @@
 %%% jestEFGrafem
 jestEFGrafem(Graph) :-
-    getGraphVertices(Graph, Vertices),
-    checkNoDuplicates(Graph, []),
-    checkNoUndeclared(Graph, Vertices),
-    checkGraphSymmetric(Graph).
+    checkNoDuplicates(Graph),
+    \+ undeclaredExists(Graph),
+    \+ asymmetricExists(Graph).
 
+checkNoDuplicates(Graph) :- checkNoDuplicates(Graph, []).
 checkNoDuplicates([], _Vertices).
 checkNoDuplicates([node(V, _, _ ) | L], Vertices) :-
     \+ member(V, Vertices),
     checkNoDuplicates(L, [V | Vertices]).
 
-checkNoUndeclared([], _).
-checkNoUndeclared([node(_, E, F)|L], Vertices) :-
-    listContainedInList(E, Vertices),
-    listContainedInList(F, Vertices),
-    checkNoUndeclared(L, Vertices).
+undeclaredExists(Graph) :-
+    getGraphVertices(Graph, Vertices),
+    member(node(_, E, F), Graph),
+    append(E, F, Neighbours),
+    member(V, Neighbours),
+    \+ member(V, Vertices).
 
-checkGraphSymmetric(Graph) :- checkGraphSymmetric(Graph, Graph).
-checkGraphSymmetric(_, []).
-checkGraphSymmetric(Graph, [node(V, _E, F)|L]) :-
-    checkIfFedgesAreSymmetric(Graph, F, V),
-    checkGraphSymmetric(Graph, L).
-
-checkIfFedgesAreSymmetric(_, [], _) :- !.
-checkIfFedgesAreSymmetric(Graph, [E|F], V) :-
-    checkIfVisInE(Graph, E, V),
-    checkIfFedgesAreSymmetric(Graph, F, V).
-
-checkIfVisInE([node(V, _A, F) | _L], V, Vstart) :-
-    member(Vstart, F).
-
-checkIfVisInE([_|L], V, Vstart) :-
-    checkIfVisInE(L, V, Vstart).
+asymmetricExists(Graph) :- 
+    member(node(V, _, F), Graph),
+    member(VSymmetric, F),
+    member(node(VSymmetric, _, FSymmetric), Graph),
+    \+ member(V, FSymmetric).
 
 getGraphVertices(Graph, Vertices) :- computeGraphVertices(Graph, [], Vertices).
 computeGraphVertices([], Vertices, Vertices).
