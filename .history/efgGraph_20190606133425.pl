@@ -1,5 +1,6 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%% Part first - jestEFGrafem
+
 jestEFGrafem(Graph) :-
     checkNoVertexIsDuplicated(Graph),
     \+ undeclaredVertexExists(Graph),
@@ -26,6 +27,7 @@ asymmetricVertexExists(Graph) :-
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %  Part second - jestDobrzeUlozony
+
 jestDobrzeUlozony(EFgraf) :-
     jestEFGrafem(EFgraf),
 
@@ -48,20 +50,34 @@ fDegreeOverLimit(Graph, Limit) :-
     length(F, FDegree),
     FDegree > Limit.
 
-findEnd(Graph, End) :- findEnds(Graph, [], [End]).
-findEnds([], Ends, Ends).
-findEnds([node(V, [], _ ) | L], Ends, Results) :-
-    findEnds(L, [V|Ends], Results).
-findEnds([node(_, E, _) | L], Ends, Results) :-
+% findEnd(Graph, End) :- findEnds(Graph, [], End).
+% findEnds([], [], []) 
+% findEnds([], [End], [End]).
+% findEnds([node(V, [], _ ) | L], Ends, Results) :-
+%     findEnds(L, [V|Ends], Results).
+% findEnds([node(_, E, _) | L], Ends, Results) :-
+%     length(E, Len),
+%     Len > 0,
+%     findEnds(L, Ends, Results).
+
+findEnd(Graph, End) :- findEnd(Graph, [], End).
+findEnd([], [], []) :- !.
+findEnd([], End, End) :-
+    length(End, Len),
+    Len == 1.
+findEnd([node(V, [], _ ) | L], Ends, Results) :-
+    findEnd(L, [V|Ends], Results).
+findEnd([node(_, E, _) | L], Ends, Results) :-
     length(E, Len),
     Len > 0,
-    findEnds(L, Ends, Results).
+    findEnd(L, Ends, Results).
 
-findStart(Graph, Start) :- findStarts(Graph, [Start]).
+findStart(Graph, Start) :- write('findStarts'), nl, findStarts(Graph, [Start]).
 findStarts(Graph, Starts) :-
     inputEEdges(Graph, [], InputEdges),
+    write(InputEdges), nl, 
     getGraphVertices(Graph, Vertices),
-    difference(Vertices, InputEdges, [], Starts).
+    difference(Vertices, InputEdges, Starts).
 
 inputEEdges([], InputEdges, InputEdges).
 inputEEdges([node(_, E, _) | L], InputEdges, Result) :-
@@ -92,9 +108,9 @@ dfsE(Graph, V, Destination, CurrentStep, MaximumSteps, VisitedVerticesSet) :-
     member(Next, F),
     dfsE(Graph, Next, Destination, NewStep, MaximumSteps, NewVisitedVerticesSet).
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%  Part three - jestDobrzePermutujacy
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%% Part three - jestDobrzePermutujacy
 jestDobrzePermutujacy(EFGraf) :-
     jestEFGrafem(EFGraf),
     \+ failsFirstCheck(EFGraf).
@@ -124,9 +140,15 @@ failsFirstCheck(Graph) :-
 
 secondCheck(Graph) :-
     findStart(Graph, Start).
+    
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% EFGraf utils
+sanitazeGetVertex(node(V, SanitazedE, SanitazedF), Graph) :-
+    member(node(V, E, F), Graph),
+    list_to_set(E, SanitazedE),
+    list_to_set(F, SanitazedF).
+
 getGraphVertices(Graph, Vertices) :- computeGraphVertices(Graph, [], Vertices).
 computeGraphVertices([], Vertices, Vertices).
 computeGraphVertices([node(V, _, _) | L], Vertices, Result) :-
@@ -146,6 +168,10 @@ computeMaxEDegreeOfGraph([node(_, E, _) | L], D, Result) :-
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % My list utils
+difference(L1, L2, Result) :-
+    list_to_set(L2, L2Set),
+    difference(L1, L2Set, [], Result).
+
 difference([], _, List, List).
 difference([E|L1], L2, Ends, Result) :-
     \+ member(E, L2),

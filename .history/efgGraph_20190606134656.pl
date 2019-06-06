@@ -95,36 +95,6 @@ dfsE(Graph, V, Destination, CurrentStep, MaximumSteps, VisitedVerticesSet) :-
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %  Part three - jestDobrzePermutujacy
 
-jestDobrzePermutujacy(EFGraf) :-
-    jestEFGrafem(EFGraf),
-    \+ failsFirstCheck(EFGraf).
-    % secondCheck(EFGraf).
-
-
-failsFirstCheck(Graph) :-
-    findEnd(Graph, End),
-
-    member(node(V, E, F), Graph),
-    length(E, ELength), length(F, FLength),
-    ELength > 0, 
-    FLength > 0,
-
-    member(V1, E),
-    member(W1, F),
-
-    W1 \= End,
-
-    member(node(W1, EW, _), Graph),
-
-    \+ (
-            member(U, EW),
-            member(node(U, _, FU), Graph),
-            member(V1, FU)
-    ).
-
-secondCheck(Graph) :-
-    findStart(Graph, Start).
-
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% EFGraf utils
 getGraphVertices(Graph, Vertices) :- computeGraphVertices(Graph, [], Vertices).
