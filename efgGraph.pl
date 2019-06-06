@@ -95,10 +95,9 @@ dfsE(Graph, V, Destination, CurrentStep, MaximumSteps, VisitedVerticesSet) :-
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %  Part three - jestDobrzePermutujacy
 jestDobrzePermutujacy(EFGraf) :-
-    jestEFGrafem(EFGraf),
+    jestDobrzeUlozony(EFGraf),
     \+ failsFirstCheck(EFGraf),
     \+ failsSecondCheck(EFGraf).
-    % secondCheck(EFGraf).
 
 
 failsFirstCheck(Graph) :-
@@ -138,10 +137,32 @@ failsSecondCheck(Graph) :-
         member(W1, EU)
     ).
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%  Part fourth - jestSucc - this is the Part where Szubert kills you
+jestSucc(EFGraf, L1, L2) :-
+    length(L1, M),
+    length(L2, N),
+    M =< N,
+    isFPath(EFGraf, L1),
+    isFPath(EFGraf, L2),
+    jestSucc3(EFGraf, L1, L2).
 
 
-secondCheck(Graph) :-
-    findStart(Graph, Start).
+jestSucc3(_, [], _).
+jestSucc3(EFGraf, [E1|L1], [E2|L2]) :-
+    member(node(E1, E, _), EFGraf),
+    member(E2, E),
+    jestSucc3(EFGraf, L1, L2).
+    
+
+isFPath(EFGraf, []).
+isFPath(EFGraf, [E|L]) :- isFPath(EFGraf, E, L).
+isFPath(EFGraf, _, []).
+isFPath(EFGraf, V, [E|L]) :-
+    member(node(V, _, F), EFGraf),
+    member(E, F),
+    isFPath(EFGraf, E, L).
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% EFGraf utils
