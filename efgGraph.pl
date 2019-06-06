@@ -94,10 +94,10 @@ dfsE(Graph, V, Destination, CurrentStep, MaximumSteps, VisitedVerticesSet) :-
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %  Part three - jestDobrzePermutujacy
-
 jestDobrzePermutujacy(EFGraf) :-
     jestEFGrafem(EFGraf),
-    \+ failsFirstCheck(EFGraf).
+    \+ failsFirstCheck(EFGraf),
+    \+ failsSecondCheck(EFGraf).
     % secondCheck(EFGraf).
 
 
@@ -121,6 +121,24 @@ failsFirstCheck(Graph) :-
             member(node(U, _, FU), Graph),
             member(V1, FU)
     ).
+
+failsSecondCheck(Graph) :-
+    findStart(Graph, Start),
+
+    member(node(V1, E1, F1), Graph),
+    member(V, E1),
+    member(node(V, E, F), Graph),
+    member(W1, F),
+
+    W1 \= Start,
+
+    \+ (
+        member(U, F1),
+        member(node(U, EU, FU, Graph)),
+        member(W1, EU)
+    ).
+
+
 
 secondCheck(Graph) :-
     findStart(Graph, Start).
