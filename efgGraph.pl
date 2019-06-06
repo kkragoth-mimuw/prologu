@@ -140,6 +140,8 @@ failsSecondCheck(Graph) :-
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %  Part fourth - jestSucc - this is the Part where Szubert kills you
 jestSucc(EFGraf, L1, L2) :-
+    \+var(L1),
+    \+var(L2),
     length(L1, M),
     length(L2, N),
     M =< N,
@@ -175,11 +177,13 @@ computeGraphVertices([node(V, _, _) | L], Vertices, Result) :-
 maxEDegreeOfGraph(Graph, D) :- computeMaxEDegreeOfGraph(Graph, 0, D).
 computeMaxEDegreeOfGraph([], D, D).
 computeMaxEDegreeOfGraph([node(_, E, _) | L], D, Result) :- 
-    length(E, Len),
+    list_to_set(E, ESet),
+    length(ESet, Len),
     Len > D,
     computeMaxEDegreeOfGraph(L, Len, Result).
 computeMaxEDegreeOfGraph([node(_, E, _) | L], D, Result) :- 
-    length(E, Len),
+    list_to_set(E, ESet),
+    length(ESet, Len),
     Len =< D,
     computeMaxEDegreeOfGraph(L, D, Result). 
 
