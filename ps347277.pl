@@ -221,12 +221,12 @@ maxEDegreeOfGraph(Graph, D) :- computeMaxEDegreeOfGraph(Graph, 0, D).
 %computeMaxEDegreeOfGraph(+Node, +Int: tmp, -Int: result)
 computeMaxEDegreeOfGraph([], D, D).
 computeMaxEDegreeOfGraph([node(_, E, _) | L], D, Result) :- 
-    list_to_set(E, ESet), % this is trivial, easily done with member and accumulator
+    myListToSet(E, ESet),
     length(ESet, Len),
     Len > D,
     computeMaxEDegreeOfGraph(L, Len, Result).
 computeMaxEDegreeOfGraph([node(_, E, _) | L], D, Result) :- 
-    list_to_set(E, ESet), % this is trivial, easily done with member and accumulator
+    myListToSet(E, ESet),
     length(ESet, Len),
     Len =< D,
     computeMaxEDegreeOfGraph(L, D, Result). 
@@ -245,10 +245,19 @@ difference([E|L1], L2, Ends, Result) :-
     member(E, L2),
     difference(L1, L2, Ends, Result).
 
+%myListToSet(+List, -List)
+myListToSet(List, Set) :- myListToSet(List, [], Set).
+%myListToSet(+List, +List: acc, -List: result)
+myListToSet([], Set, Set).
+myListToSet([E|L], Set, Result) :-
+    addElementToSet(E, Set, NewSet),
+    myListToSet(L, NewSet, Result).
+
 %addElementToSet(+Term, +List, -List: result)
 addElementToSet(Element, Set, Set) :-
     member(Element, Set).
 
 addElementToSet(Element, Set, [Element|Set]) :-
     \+ member(Element, Set).
+
 
