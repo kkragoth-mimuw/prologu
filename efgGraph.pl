@@ -177,20 +177,23 @@ failsSecondCheck(Graph) :-  % doesn't pass second implication of task
 %jestSucc(+EFGraf, +Term[], +Term[])
 jestSucc(EFGraf, L1, L2) :-
     % According to moodle's forum no need to check here if first argument is EFGraf
+
     length(L1, M),
     length(L2, N),
+
     M =< N,
 
     isFPath(EFGraf, L1),
     isFPath(EFGraf, L2),
-    checkIfIsSuccessor(EFGraf, L1, L2).
 
+    checkIfEEdgesExistBetween(EFGraf, L1, L2).
 
-checkIfIsSuccessor(_, [], _).
-checkIfIsSuccessor(EFGraf, [E1|L1], [E2|L2]) :-
+%checkIfEEdgesExistBetween(+EFGraf, +Term[], +Term[])
+checkIfEEdgesExistBetween(_, [], _).
+checkIfEEdgesExistBetween(EFGraf, [E1|L1], [E2|L2]) :-
     member(node(E1, E, _), EFGraf),
     member(E2, E),
-    checkIfIsSuccessor(EFGraf, L1, L2).
+    checkIfEEdgesExistBetween(EFGraf, L1, L2).
     
 %isFPath(+Node[], +Term[])
 isFPath(_, []).
@@ -203,27 +206,36 @@ isFPath(EFGraf, [V1, V2|L]) :-
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% EFGraf utils
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%getGraphVertices(+Node[], -Term[])
 getGraphVertices(Graph, Vertices) :- computeGraphVertices(Graph, [], Vertices).
+%computeGraphVertices(+Node[], +Term[]: tmp, -Term[]: result)
 computeGraphVertices([], Vertices, Vertices).
 computeGraphVertices([node(V, _, _) | L], Vertices, Result) :-
     computeGraphVertices(L, [V|Vertices], Result).
 
 
+%maxEDegreeOfGraph(+Node[], -Int)
 maxEDegreeOfGraph(Graph, D) :- computeMaxEDegreeOfGraph(Graph, 0, D).
+%computeMaxEDegreeOfGraph(+Node, +Int: tmp, -Int: result)
 computeMaxEDegreeOfGraph([], D, D).
 computeMaxEDegreeOfGraph([node(_, E, _) | L], D, Result) :- 
-    list_to_set(E, ESet),
+    list_to_set(E, ESet), % this is trivial, easily done with member and accumulator
     length(ESet, Len),
     Len > D,
     computeMaxEDegreeOfGraph(L, Len, Result).
 computeMaxEDegreeOfGraph([node(_, E, _) | L], D, Result) :- 
-    list_to_set(E, ESet),
+    list_to_set(E, ESet), % this is trivial, easily done with member and accumulator
     length(ESet, Len),
     Len =< D,
     computeMaxEDegreeOfGraph(L, D, Result). 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % My list utils
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%difference(+List: L1, +List: L2, +List: tmp, -List: L1 - L2)
 difference([], _, List, List).
 difference([E|L1], L2, Ends, Result) :-
     \+ member(E, L2),
@@ -233,6 +245,7 @@ difference([E|L1], L2, Ends, Result) :-
     member(E, L2),
     difference(L1, L2, Ends, Result).
 
+%addElementToSet(+Term, +List, -List: result)
 addElementToSet(Element, Set, Set) :-
     member(Element, Set).
 
